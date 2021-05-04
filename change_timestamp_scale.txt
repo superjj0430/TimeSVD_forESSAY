@@ -1,0 +1,77 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[1]:
+
+
+import pandas as pd
+import numpy as np
+
+
+# In[14]:
+
+
+data = pd.read_csv(r'C:\Users\A122975\Desktop\timesvd\dropany_v4.txt', sep='\t', names=['userId', 'movieId', 'rating', 'date'])
+scale = pd.read_csv(r'C:\Users\A122975\Desktop\timesvd\u.txt', sep='\t', names=['userId', 'movieId', 'rating', 'date'])
+data = data.drop(data.index[0])
+data.info()
+
+
+# In[3]:
+
+
+print('max:', scale['date'].max())
+print('min:', scale['date'].min())
+print('max:', data['date'].max())
+print('min:', data['date'].min())
+
+
+# In[34]:
+
+
+print('max:', scale['movieId'].max())
+print('min:', scale['movieId'].min())
+print('max:', data['movieId'].max())
+print('min:', data['movieId'].min())
+
+
+# In[15]:
+
+
+# 轉換到指定範圍
+# new_value = ( (old_value - old_min) / (old_max - old_min) ) * (new_max - new_min) + new_min
+
+# Sample
+# new_value = ( ( 10000 - -16000 ) / (16000 - -16000) ) * (100 - 0) + 0
+#           = 81.25
+
+old_value = 0
+old_min = 1266508800
+old_max = 1615651200
+new_min = 874724710
+new_max = 893286638
+
+
+# In[16]:
+
+
+for i in range(1,15563):
+    old_value = int(data['date'][i])
+    data['date'][i] = ( (old_value - old_min) / (old_max - old_min) ) * (new_max - new_min) + new_min
+
+for i in range(1, 15563):
+    data['date'][i] = round(data['date'][i])
+
+
+# In[25]:
+
+
+for i in range(1, 15563):
+    data['rating'][i] = round(float(data['rating'][i]))
+
+
+# In[29]:
+
+
+data.to_csv('test.txt', sep='\t', index=False)
+
